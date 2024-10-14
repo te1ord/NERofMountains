@@ -1,0 +1,7 @@
+datagen_config:
+  mountains_path: '../dataset/Mountain.csv'  
+  save_dataset_path : '../dataset/mountains_only_synthetic.txt'
+  generator_model: "meta/llama-3.1-405b-instruct"
+  min_samples: 0
+  max_samples: 3
+  temperature: 0.9 # makes model less deterministics

@@ -1,7 +1,19 @@
 datagen_config:
-  mountains_path: '../dataset/Mountain.csv'  
-  save_dataset_path : '../dataset/mountains_only_synthetic.txt'
-  generator_model: "meta/llama-3.1-405b-instruct"
+  generator_model: 'meta/llama-3.1-405b-instruct'
   min_samples: 0
   max_samples: 3
   temperature: 0.9 # makes model less deterministics
+  
+paths:
+  mountains_path: '../dataset/synthetic/Mountain.csv'  
+  save_dataset_path : '../dataset/synthetic/mountains_only_synthetic.txt'
+  save_processed_path: '../../dataset/synthetic/synthetic_processed.json'
+  
+  wnut_data_path : '../../dataset/wnut16/wnut 16.txt.conll'
+  processed_wnut_path : '../../dataset/wnut16/wnut_processed.csv'
+  
+  few_nerd_balanced_train : '../../dataset/few-nerd/train'
+  few_nerd_balanced_val : '../../dataset/few-nerd/val'
+  few_nerd_balanced_test : '../../dataset/few-nerd/test'
+
+  final_dataset_path: '../../dataset/resulting_dataset'

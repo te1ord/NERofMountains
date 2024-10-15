@@ -11,7 +11,7 @@ from utils.constants import init_datagen_config
 # setting up the Nvidia API client
 client = OpenAI(
     base_url="https://integrate.api.nvidia.com/v1", 
-    api_key=os.environ["NVIDIA_API_KEY"]
+    api_key=os.environ["NVIDIA_API_KEY"] # use your api key (export NVIDIA_API_KEY='your_api_key_here') access at https://build.nvidia.com/nim
 )
 
 # extract mountain names 

@@ -27,7 +27,7 @@ def init_datagen_config(config_filename='configs/datagen.yaml'):
     }
     return constants
 
-def init_training_config(config_filename='configs/train.yaml'):
+def init_training_config(config_filename='configs/model.yaml'):
     """Load constants from the given configuration YAML file."""
     config = load_yaml_config(config_filename)
     

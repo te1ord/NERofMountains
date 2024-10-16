@@ -3,31 +3,55 @@ from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 import logging
 import os
 
-def setup_logging(log_file='logs/training.log', log_level=logging.INFO):
+import logging
+import sys
+import os
+
+# logging 
+def in_jupyter_notebook():
     """
-    Set up logging configuration to log messages to a file and the console.
+    Check if the script is running in a Jupyter notebook.
+    """
+    try:
+        from IPython import get_ipython
+        return get_ipython() is not None
+    except ImportError:
+        return False
+
+def setup_logging(log_file="training.log", log_level=logging.INFO):
+    """
+    Setup logging to output logs to both the console and a log file.
 
     Args:
-        log_file (str): Path to the log file. Defaults to 'logs/model_utils.log'.
-        log_level (int): Logging level. Defaults to logging.INFO.
+    log_filename (str): The name of the log file.
+    log_level (logging.level): The logging level to be used (default: logging.INFO).
     """
-    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    logger = logging.getLogger()
+    logger.setLevel(log_level)
 
-    # logging configuration
-    logging.basicConfig(
-        filename=log_file,
-        filemode='w',  # overwrite the log file each run
-        format='%(asctime)s - %(levelname)s - %(message)s',  
-        level=log_level  
-    )
-
-    console = logging.StreamHandler()
-    console.setLevel(log_level)
+    console_handler = logging.StreamHandler(sys.stdout)
+    file_handler = logging.FileHandler(log_file)
+    
+    console_handler.setLevel(log_level)
+    file_handler.setLevel(log_level)
+    
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+    
+    if not logger.hasHandlers():
+        logger.addHandler(console_handler)
+        if not in_jupyter_notebook():
+            logger.addHandler(file_handler)
+    
+    logging.getLogger("transformers").setLevel(logging.WARNING)
+    logging.getLogger("datasets").setLevel(logging.WARNING)
 
-    logging.info("Logging setup complete.")
+    logger.info("Logging setup complete.")
+    
+    if in_jupyter_notebook():
+        with open(log_file, "w") as f:
+            f.write("Logging setup complete.\n")
 
 # imput prepcoessing
 def tokenize_and_align_labels(examples, tokenizer):

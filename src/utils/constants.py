@@ -27,3 +27,29 @@ def init_datagen_config(config_filename='configs/datagen.yaml'):
     }
     return constants
 
+def init_training_config(config_filename='configs/train.yaml'):
+    """Load constants from the given configuration YAML file."""
+    config = load_yaml_config(config_filename)
+    
+    constants = {
+        'MODEL_NAME': config['model']['model_name'],
+        'LEARNING_RATE': float(config['hyperparameters']['learning_rate']),
+        'NUM_EPOCHS': config['hyperparameters']['num_train_epochs'],
+        'TRAIN_BATCH_SIZE': config['hyperparameters']['per_device_train_batch_size'],
+        'EVAL_BATCH_SIZE': config['hyperparameters']['per_device_eval_batch_size'],
+        'WEIGHT_DECAY': config['hyperparameters']['weight_decay'],
+        'SAVE_LIMIT': config['hyperparameters']['save_total_limit'],
+        'LOGGING_STEPS': config['hyperparameters']['logging_steps'],
+        'BEST_MODEL_METRIC': config['hyperparameters']['metric_for_best_model'],
+        'GREATER_IS_BETTER': config['hyperparameters']['greater_is_better'],
+        'EVAL_STRATEGY': config['hyperparameters']['evaluation_strategy'],
+        'LOGGING_STRATEGY': config['hyperparameters']['logging_strategy'],
+        'SAVE_STRATEGY': config['hyperparameters']['save_strategy'],
+        'LOAD_BEST_MODEL': config['hyperparameters']['load_best_model_at_end'],
+        'ID2LABEL': config['labels']['id2label'],
+        'LABEL2ID': config['labels']['label2id'],
+        'DATA_PATH': config['hf']['data_path'],
+        'SAVE_MODEL_PATH': config['hf']['save_model_path'],
+    }
+    return constants
+

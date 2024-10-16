@@ -8,50 +8,38 @@ import sys
 import os
 
 # logging 
-def in_jupyter_notebook():
+def setup_logging(log_file="logs/training.log", log_level=logging.INFO):
     """
-    Check if the script is running in a Jupyter notebook.
-    """
-    try:
-        from IPython import get_ipython
-        return get_ipython() is not None
-    except ImportError:
-        return False
-
-def setup_logging(log_file="training.log", log_level=logging.INFO):
-    """
-    Setup logging to output logs to both the console and a log file.
+    Setup basic logging to output logs to both the console and a log file.
 
     Args:
-    log_filename (str): The name of the log file.
+    log_file (str): The name of the log file.
     log_level (logging.level): The logging level to be used (default: logging.INFO).
     """
     logger = logging.getLogger()
     logger.setLevel(log_level)
 
+    if logger.hasHandlers():
+        logger.handlers.clear()
+
     console_handler = logging.StreamHandler(sys.stdout)
-    file_handler = logging.FileHandler(log_file)
-    
     console_handler.setLevel(log_level)
+
+    # file
+    os.makedirs(os.path.dirname(log_file), exist_ok=True) 
+    file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(log_level)
-    
+
+    # format
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     console_handler.setFormatter(formatter)
     file_handler.setFormatter(formatter)
-    
-    if not logger.hasHandlers():
-        logger.addHandler(console_handler)
-        if not in_jupyter_notebook():
-            logger.addHandler(file_handler)
-    
-    logging.getLogger("transformers").setLevel(logging.WARNING)
-    logging.getLogger("datasets").setLevel(logging.WARNING)
+
+    # handlers
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
 
     logger.info("Logging setup complete.")
-    
-    if in_jupyter_notebook():
-        with open(log_file, "w") as f:
-            f.write("Logging setup complete.\n")
 
 # imput prepcoessing
 def tokenize_and_align_labels(examples, tokenizer):

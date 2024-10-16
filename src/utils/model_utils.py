@@ -1,5 +1,33 @@
 from transformers import DataCollatorForTokenClassification
 from sklearn.metrics import precision_recall_fscore_support, accuracy_score
+import logging
+import os
+
+def setup_logging(log_file='logs/training.log', log_level=logging.INFO):
+    """
+    Set up logging configuration to log messages to a file and the console.
+
+    Args:
+        log_file (str): Path to the log file. Defaults to 'logs/model_utils.log'.
+        log_level (int): Logging level. Defaults to logging.INFO.
+    """
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    # logging configuration
+    logging.basicConfig(
+        filename=log_file,
+        filemode='w',  # overwrite the log file each run
+        format='%(asctime)s - %(levelname)s - %(message)s',  
+        level=log_level  
+    )
+
+    console = logging.StreamHandler()
+    console.setLevel(log_level)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console.setFormatter(formatter)
+    logging.getLogger('').addHandler(console)
+
+    logging.info("Logging setup complete.")
 
 # imput prepcoessing
 def tokenize_and_align_labels(examples, tokenizer):

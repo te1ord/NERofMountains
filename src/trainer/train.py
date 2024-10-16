@@ -8,7 +8,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.constants import init_datagen_config
 
 from utils.constants import init_training_config  
-from utils.model_utils import tokenize_and_align_labels, compute_metrics, get_data_collator  
+from utils.model_utils import tokenize_and_align_labels, compute_metrics, get_data_collator, setup_logging  
+
+# logging
+setup_logging(log_file='../logs/training.log')
 
 # training config
 constants = init_training_config()
@@ -47,7 +50,6 @@ training_args = TrainingArguments(
     num_train_epochs=constants['NUM_EPOCHS'],         
     weight_decay=constants['WEIGHT_DECAY'],           
     save_total_limit=constants['SAVE_LIMIT'],        
-    logging_dir='../logs',                
     report_to="none"                    
 )
 

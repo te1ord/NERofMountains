@@ -3,3 +3,9 @@
 
 # Ignore Python bytecode cache
 __pycache__/
+
+# ignore result folder from model training
+/results/
+
+# ignore training.log but keep the folder (need logging to check/save/make prettier training progress in the notebook)
+/logs/training.log

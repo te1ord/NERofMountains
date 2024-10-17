@@ -58,7 +58,7 @@ def main():
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset['train'],
-        eval_dataset=tokenized_dataset['test'],
+        eval_dataset=tokenized_dataset['val'],
         tokenizer=tokenizer,
         data_collator=data_collator,  
         compute_metrics=compute_metrics 

@@ -32,8 +32,9 @@ NERofMountains/
 │   │   └── llm_generator.py     
 │   ├── trainer/                
 │   │   ├── inference.py         # Inference script
-│   │   └── train.py             
-│   └── utils/                   # Utility functions and constants for training and inference
+│   │   └── train.py             # Training script
+│   │   └── weighted_train.py    # Training with class weights to deal with rare mountains occurances
+│   └── utils/                   
 │       ├── constants.py         # Constants used throughout the project
 │       └── model_utils.py       # Helper functions for model loading and preprocessing
 │
@@ -57,7 +58,9 @@ The dataset is balanced with respect to samples containing mountains (50/50), bu
 - `I-Mountain`: 2.73%
 
 2. **Model Training**: 
-The project fine-tunes a BERT base model pre-trained on [CoNLL-2003 Named Entity Recognition](https://aclanthology.org/W03-0419.pdf) and adapts it to this custom dataset. The model was trained with and without class weights, achieving an F1 score of 0.91 on the validation set in both cases. The final model with class weights adjustment is available [here](https://huggingface.co/telord/mountains-ner-model).
+The project fine-tunes a BERT base model, originally pre-trained on the [CoNLL-2003 Named Entity Recognition dataset](https://aclanthology.org/W03-0419.pdf), and adapts it to a custom dataset. The model was trained both with and without class weights, achieving an F1 score of 0.91 on the validation set in both cases. Without class weights, the model reached this score after 3 epochs, while applying class weights proportional to label frequencies took 6 epochs to achieve the same result. 
+
+Despite this, I believe the approach using class weights is more appropriate for our case, and the observed behavior may be linked to suboptimal hyperparameter selection, which requires further investigation. The final model, with class weight adjustments, is available [here](https://huggingface.co/telord/mountains-ner-model).
 
 #### Training Configuration
 

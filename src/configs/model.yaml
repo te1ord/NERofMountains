@@ -21,5 +21,5 @@ labels:
   label2id: {"O": 0, "B-Mountain": 1, "I-Mountain": 2}
 
 hf:
-  data_path: "telord/ner-mountains-dataset"
-  save_model_path : "telord/ner-mountains-model"
+  data_path: "telord/mountains-ner-dataset"
+  save_model_path : "telord/mountains-ner-model"

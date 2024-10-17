@@ -57,9 +57,9 @@ The dataset is balanced with respect to samples containing mountains (50/50), bu
 - `I-Mountain`: 2.73%
 
 2. **Model Training**: 
-The project fine-tunes a BERT base model pre-trained on [CoNLL-2003 Named Entity Recognition](https://aclanthology.org/W03-0419.pdf) and adapts it to this custom dataset. The model was trained with and without class weights, achieving an F1 score of 0.91 on the validation set in both cases. The final model with class weights adjustment is available [here](https://huggingface.co/telord/mountains-ner-model-imbalanced).
+The project fine-tunes a BERT base model pre-trained on [CoNLL-2003 Named Entity Recognition](https://aclanthology.org/W03-0419.pdf) and adapts it to this custom dataset. The model was trained with and without class weights, achieving an F1 score of 0.91 on the validation set in both cases. The final model with class weights adjustment is available [here](https://huggingface.co/telord/mountains-ner-model).
 
-### Training Configuration
+#### Training Configuration
 
 The training settings are defined in `src/configs/model.yaml`. You can modify hyperparameters like `num_train_epochs`, `learning_rate`, and others to suit your needs.
 
@@ -144,7 +144,7 @@ python trainer/inference.py --sentence "Denali is the tallest mountain in North 
 ```
 
 This will output the detected mountain entities in the sentence:
----
+
 Denali   : B-Mountain  
 is       : O  
 the      : O  
@@ -154,18 +154,16 @@ in       : O
 North    : O  
 America  : O  
 .        : O  
----
+
 ## Results and Performance
 
 The model achieves good accuracy in recognizing mountain names across different contexts. For evaluation, precision, recall, and F1 score metrics are logged after each epoch.
 
 Example metrics from training:
-- **Accuracy**: 0.985
-- **Precision**: 0.878
-- **Recall**: 0.937
-- **F1 Score**: 0.906
-
----
+- **Accuracy**: 0.987
+- **Precision**: 0.909
+- **Recall**: 0.915
+- **F1 Score**: 0.912
 
 ## Inference Demo
 

@@ -3,11 +3,31 @@ from datasets import load_dataset
 from transformers import BertForTokenClassification, BertTokenizerFast, Trainer, TrainingArguments
 import os
 import sys
+import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.constants import init_datagen_config
 from utils.constants import init_training_config
 from utils.model_utils import tokenize_and_align_labels, compute_metrics, get_data_collator, setup_logging
+
+def compute_class_weights(dataset):
+    """
+    Compute class weights based on the class frequencies in the dataset.
+    This will calculate weights for each class: 'B-Mountain', 'I-Mountain', and 'O'.
+    """
+    label_counts = [0, 0, 0]  # Assuming labels: 0: 'O', 1: 'B-Mountain', 2: 'I-Mountain'
+
+    for example in dataset['train']:  # Use the training set to calculate class frequencies
+        labels = example['labels']
+        for label in labels:
+            if label != -100:  # Skip padded tokens
+                label_counts[label] += 1
+
+    total_labels = sum(label_counts)
+    class_weights = [total_labels / count for count in label_counts]
+    class_weights = torch.tensor(class_weights, dtype=torch.float32)
+
+    return class_weights
 
 def main():
     # logging
@@ -30,6 +50,26 @@ def main():
     # load & tokenize dataset
     dataset = load_dataset(constants['DATA_PATH'])
     tokenized_dataset = dataset.map(lambda x: tokenize_and_align_labels(x, tokenizer), batched=True)
+
+    # Compute class weights based on training set distribution
+    class_weights = compute_class_weights(dataset)
+
+    # Modify the model's loss function to use class weights
+    def compute_loss_with_class_weights(outputs, labels):
+        """
+        Custom loss function that applies class weights during training.
+        """
+        loss_fct = torch.nn.CrossEntropyLoss(weight=class_weights.to(outputs.device), ignore_index=-100)
+        return loss_fct(outputs.view(-1, model.config.num_labels), labels.view(-1))
+
+    # Override the Trainer class to include the class-weighted loss function
+    class CustomTrainer(Trainer):
+        def compute_loss(self, model, inputs, return_outputs=False):
+            labels = inputs.get("labels")
+            outputs = model(**inputs)
+            logits = outputs.get("logits")
+            loss = compute_loss_with_class_weights(logits, labels)
+            return (loss, outputs) if return_outputs else loss
 
     # data collator
     data_collator = get_data_collator(tokenizer)
@@ -54,7 +94,7 @@ def main():
     )
 
     # trainer
-    trainer = Trainer(
+    trainer = CustomTrainer(
         model=model,
         args=training_args,
         train_dataset=tokenized_dataset['train'],
